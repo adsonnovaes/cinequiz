@@ -1,15 +1,17 @@
 import styled from 'styled-components';
+import Head from 'next/head';
 import db from '../db.json';
 import Widget from '../src/components/Widget';
 import QuizLogo from '../src/components/QuizLogo';
 import QuizBackground from '../src/components/QuizBackground';
 import Footer from '../src/components/Footer';
 import GitHubCorner from '../src/components/GitHubCorner';
+import {useRouter} from 'next/router';
 
 const Title = styled.h1`
   font-size: 50px;
   color: ${({ theme }) => theme.colors.secondary};
-`
+`;
 
 // const BackgroundImage = styled.div`
 //   background-image: url(${db.bg});
@@ -30,16 +32,37 @@ export const QuizContainer = styled.div`
 `;
 
 export default function Home() {
+  const router = useRouter();
+  const [name,setName] = React.useState('');
+
   return (
-    <QuizBackground backgroundImage={db.bg}> 
+    <QuizBackground backgroundImage={db.bg}>
+      <Head>
+        <title>CineQuiz - Home</title>
+      </Head>
       <QuizContainer>
+        <QuizLogo />
         <Widget>
           <Widget.Header>
             <h1>Hístoria do Cinema</h1>
           </Widget.Header>
           <Widget.Content>
-            <p>Há alguma coisa escrita para não passar batido</p>
-
+            <form onSubmit={function name(infoEvent) {
+              infoEvent.preventDefault();
+              router.push(`/quiz?name=${name}`);
+            }}>
+              <p>Teste seus conhecimentos sobre o mundo do cinema.</p>
+              <input 
+                onChange={function name(infoEvent) {
+                  // name = infoEvent.target.value;
+                  setName(infoEvent.target.value);
+                }}
+                placeholder="Digite seu nome"
+              />
+              <button type="submit" disabled={name.length === 0}>
+                Jogar {name}
+              </button>
+            </form>
           </Widget.Content>
         </Widget>
 
@@ -52,9 +75,9 @@ export default function Home() {
           </Widget.Content>
 
         </Widget>
-        <Footer/>
+        <Footer />
       </QuizContainer>
-      <GitHubCorner projectUrl="https://github.com/adsonnovaes"/>
+      <GitHubCorner projectUrl="https://github.com/adsonnovaes" />
     </QuizBackground>
   );
 }
